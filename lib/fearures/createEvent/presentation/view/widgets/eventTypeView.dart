@@ -20,7 +20,6 @@ class _EventTypeViewState extends State<EventTypeView> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
-
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
@@ -58,6 +57,7 @@ class _EventTypeViewState extends State<EventTypeView> {
           ),
         ),
       ),
+
       backgroundColor: Colors.black,
 
       body: SafeArea(
@@ -76,7 +76,6 @@ class _EventTypeViewState extends State<EventTypeView> {
                       false,
                     ];
                     setState(()  {
-
                     });
                   },
                   text: 'Wedding', widget: ImageIcon(
@@ -133,9 +132,12 @@ class _EventTypeViewState extends State<EventTypeView> {
                       Navigator.pushReplacement(context, PageRouteBuilder(pageBuilder: (context,an,sc){
                         return CreateEventView(status1: true,);
                       }));
-
                     }else{
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: CustomText(
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        closeIconColor: Colors.white,
+                          showCloseIcon: true,
+                          behavior: SnackBarBehavior.floating,
+                          content: CustomText(
                         text: 'Please select event type',
                         color: Colors.white,
                       )));

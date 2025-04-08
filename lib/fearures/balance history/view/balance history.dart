@@ -79,13 +79,13 @@ class _BalanceHistoryViewState extends State<BalanceHistoryView> {
                           });
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 40 , vertical: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 24 , vertical: 10),
                           decoration: BoxDecoration(
                               border: Border.all(color: dailyOrmonthly ?  Colors.white : Colors.transparent),
                               color: Color(0xff242424),
                               borderRadius: BorderRadius.circular(5)
                           ),
-                          child: CustomText(text: 'Daily' ,color: Colors.white,),
+                          child: CustomText(text: 'Received Gifts' ,color: Colors.white,),
                         ),
                       ),
                       Spacer(),
@@ -103,7 +103,7 @@ class _BalanceHistoryViewState extends State<BalanceHistoryView> {
                               color: Color(0xff242424),
                               borderRadius: BorderRadius.circular(5)
                           ),
-                          child: CustomText(text: 'Monthly' ,color: Colors.white,),
+                          child: CustomText(text: 'Sent Gifts' ,color: Colors.white,),
                         ),
                       ),
                     ],
@@ -198,7 +198,7 @@ class CustomEvent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 6 , horizontal: 16),
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       margin: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
           color: Colors.white,
@@ -206,9 +206,16 @@ class CustomEvent extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            backgroundColor: Colors.grey.shade200,
-            backgroundImage: AssetImage('assets/images/user.png'),
+
+          Container(
+            padding: EdgeInsets.all(10),
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.grey.shade200
+            ),
+            child: Image.asset('assets/images/user.png'),
           ),
           SizedBox(width: 16,),
           CustomText(text: 'Mohamed charaf'),

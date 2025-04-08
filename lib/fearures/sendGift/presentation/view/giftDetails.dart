@@ -1,15 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gifts/fearures/sendGift/presentation/manager/sendGiftCubit.dart';
+import 'package:gifts/fearures/sendGift/presentation/manager/sendGiftStates.dart';
 import 'package:gifts/fearures/sendGift/presentation/view/giftDeliveredSuccess.dart';
-
+import 'package:gifts/litls/widgets/customButton.dart';
 import '../../../../litls/responsiveSize.dart';
 import '../../../../litls/widgets/customText.dart';
-import 'custombuttonSendGift.dart';
+import 'giftSendSuccessAndShare.dart';
 
 class GiftDetilsView extends StatelessWidget {
-  const GiftDetilsView({super.key, required this.name, required this.image, required this.price});
- final String name;
- final String image;
- final double price;
+  const GiftDetilsView(
+      {super.key,
+      required this.name,
+      required this.image,
+      required this.price,
+      required this.phone,
+      this.photoOrThumbnail,
+      required this.ContactName,
+      required this.content,
+      required this.contactId,
+      required this.email,
+      required this.gift_id});
+
+  final String name;
+  final String image;
+  final double price;
+  final String ContactName;
+  final String phone;
+  final photoOrThumbnail;
+  final String content;
+  final String contactId;
+  final String email;
+  final int gift_id;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,17 +98,37 @@ class GiftDetilsView extends StatelessWidget {
                             color: Color(0xff242424)),
                         child: Row(
                           children: [
-                            CircleAvatar(
-                              backgroundColor: Colors.black,
-                              backgroundImage:
-                                  AssetImage('assets/images/user.png'),
-                            ),
+                            photoOrThumbnail != null
+                                ? CircleAvatar(
+                                    backgroundImage:
+                                        MemoryImage(photoOrThumbnail!),
+                                  )
+                                : CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    child: CustomText(
+                                      text: ContactName[0],
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                             SizedBox(
                               width: 20,
                             ),
-                            CustomText(
-                              text: 'Mohamed charaf',
-                              color: Colors.white,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                  text: ContactName,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(
+                                  height: 2,
+                                ),
+                                CustomText(
+                                  text: phone,
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ],
                             ),
                             Spacer(),
                             CircleAvatar(
@@ -116,10 +160,10 @@ class GiftDetilsView extends StatelessWidget {
                             color: Color(0xff242424)),
                         child: Row(
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               width: 20,
                             ),
-                            CustomText(
+                            const CustomText(
                               text: 'Amount of gift',
                               color: Colors.white,
                             ),
@@ -135,9 +179,7 @@ class GiftDetilsView extends StatelessWidget {
                           ],
                         ),
                       ),
-                      CustomVerticalSizeBox(
-                        padding: .8,
-                      ),
+                      SizedBox(height: 20,),
                     ],
                   ),
                 ),
@@ -146,104 +188,130 @@ class GiftDetilsView extends StatelessWidget {
                 height: 30,
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 20 , vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade200)
-                ),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade200)),
                 child: Column(
                   children: [
-                    Image.asset(image , height: SizeConfig.screenHeight!*.2,),
-                    CustomText(text: name),
-                    SizedBox(height: 5,),
-                    CustomText(text: '${price}\$' , color: Colors.black,fontWeight: FontWeight.w600,),
+                    Image.network(
+                      image,
+                      height: SizeConfig.screenHeight! * .17,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        } else {
+                          return SpinKitThreeBounce(
+                            color: Colors.black,
+                            size: 30,
+                          );
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomText(
+                      text: name,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: CustomText(
+                        text: content,
+                        color: Colors.grey,
+                        maxLines: 6,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    CustomText(
+                      fontSize: 17,
+                      text: '${price}\$',
+                      color: Color(0xff00BFFF),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ],
                 ),
               ),
-            CustomVerticalSizeBox(),
-              // CustomSendGiftImage(
-              //   checkWidget:    CircleAvatar(
-              //     radius: 12,
-              //     backgroundColor: Colors.green,
-              //     child: FittedBox(
-              //         child: Padding(
-              //           padding: const EdgeInsets.all(4.0),
-              //           child: Icon(
-              //             Icons.check,
-              //             color: Colors.white,
-              //           ),
-              //         )),
-              //   ),
-              //   widget: Icon(
-              //     Icons.message,
-              //     size: 25,
-              //     color: Colors.white,
-              //   ),
-              //   text: 'Send Message',
-              // ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(vertical: 16),
-              //   child: CustomSendGiftImage(
-              //     checkWidget:    CircleAvatar(
-              //       radius: 12,
-              //       backgroundColor: Colors.green,
-              //       child: FittedBox(
-              //           child: Padding(
-              //             padding: const EdgeInsets.all(4.0),
-              //             child: Icon(
-              //               Icons.check,
-              //               color: Colors.white,
-              //             ),
-              //           )),
-              //     ),
-              //     widget: ImageIcon(
-              //       AssetImage('assets/images/gallery.png'),
-              //       size: 30,
-              //       color: Colors.white,
-              //     ),
-              //     text: 'Upload photo',
-              //   ),
-              // ),
-              // CustomSendGiftImage(
-              //   widget: ImageIcon(
-              //     AssetImage('assets/images/take image.png'),
-              //     size: 30,
-              //     color: Colors.white,
-              //   ),
-              //   text: 'Camra image',
-              // ),
-              // SizedBox(
-              //   height: 16,
-              // ),
-              // CustomSendGiftImage(
-              //   widget: Icon(
-              //     Icons.play_circle_fill,
-              //     color: Colors.white,
-              //   ),
-              //   text: 'Upload video',
-              // ),
-              // CustomVerticalSizeBox(
-              //   padding: .8,
-              // ),
-              GestureDetector(
-                onTap: (){
-                  Navigator.push(context,PageRouteBuilder(pageBuilder:(context,an,sc){
-                    return GiftDelivedSuccess(text: 'GIFT\n DELIVERED',);
-                  }));
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  margin: EdgeInsets.symmetric(
-                      horizontal: SizeConfig.screenWidth! * .2),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), color: Colors.black),
-                  child: Center(
-                      child: CustomText(
-                    fontWeight: FontWeight.w600,
-                    text: 'Send gift',
-                    color: Colors.white,
+              CustomVerticalSizeBox(
+                padding: .8,
+              ),
+              BlocProvider(
+                  create: (context) => SendGiftCubit(SendGiftService()),
+                  child: BlocConsumer<SendGiftCubit, SendGiftStates>(
+                    builder: (context, state) {
+                      if (state is InitStateSendGift ||
+                          state is FailureStateSendGift ||
+                          state is SuccessStateSendGift) {
+                        return GestureDetector(
+                          onTap: () {
+                            context
+                                .read<SendGiftCubit>()
+                                .createOrder(orderData: {
+                              "name": ContactName,
+                              "email": email,
+                              "phone": phone,
+                              "amount": price.toString(),
+                              "bank": 'CIB',
+                              "sender_id": '2',
+                              "receiver_id": contactId,
+                              "gift_id": gift_id.toString(),
+                            });
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: SizeConfig.screenWidth! * .2),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.black),
+                            child: Center(
+                                child: CustomText(
+                              fontWeight: FontWeight.w600,
+                              text: 'Send gift',
+                              color: Colors.white,
+                            )),
+                          ),
+                        );
+                      } else if (state is LoadingStateSendGift) {
+                        return SpinKitThreeBounce(
+                          size: 30,
+                          color: Colors.black,
+                        );
+                      } else {
+                        return SizedBox();
+                      }
+                    },
+                    listener: (context, state) {
+                      if (state is SuccessStateSendGift) {
+                        Navigator.push(context,
+                            PageRouteBuilder(pageBuilder: (context, an, sc) {
+                          return GiftDelivedSuccess(
+                            text: 'GIFT\n DELIVERED',
+                          );
+                        }));
+                      } else if (state is FailureStateSendGift) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            showCloseIcon: true,
+                            closeIconColor: Colors.white,
+                            behavior: SnackBarBehavior.floating,
+                            content: CustomText(
+                              text: state.message,
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                            )));
+                      }
+                    },
                   )),
-                ),
+              SizedBox(
+                height: 16,
               ),
             ],
           ),

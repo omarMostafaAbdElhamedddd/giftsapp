@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gifts/fearures/setting/presentation/view/widgets/addNewCreditCart.dart';
@@ -48,7 +50,7 @@ class SettingView extends StatelessWidget {
                 ],
               ),
             ),
-            CustomVerticalSizeBox(),
+            CustomVerticalSizeBox(padding: .8,),
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -56,6 +58,7 @@ class SettingView extends StatelessWidget {
                       horizontal: SizeConfig.screenWidth! * .08),
                   child: Column(
                     children: [
+
                       CustomSettingItem(
                         onTap: (){
                           Navigator.push(context,PageRouteBuilder(pageBuilder:(context,an,sc){

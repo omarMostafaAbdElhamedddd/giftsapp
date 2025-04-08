@@ -1,33 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gifts/fearures/root/presentation/rootView.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'fearures/auth/login/presentation/view/loginView.dart';
+import 'litls/widgets/check_internet_connection.dart';
 
-void main() {
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark));
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.black, // تغيير الخلفية هنا
-    systemNavigationBarIconBrightness: Brightness.light, // تغيير لون الأيقونات
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
   ));
-  runApp(const MyApp());
+
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.black,
+    systemNavigationBarIconBrightness: Brightness.light,
+  ));
+
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('token') ?? '';
+
+  runApp(MyApp(token: token));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
 
-  // This widget is the root of your application.
+class MyApp extends StatelessWidget{
+  const MyApp({super.key, required this.token});
+final String token;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        // useMaterial3: true,
+    print(token);
+    return ChangeNotifierProvider(
+      create: (context)=>ConnectivityProvider(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: token ==null || token == '' ?  LoginView() : RootView(),
       ),
-      home: const LoginView(),
     );
   }
 }

@@ -55,7 +55,7 @@ class InboxView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Column(
                     children: [
-                      CustomVerticalSizeBox(padding: 1),
+                      CustomVerticalSizeBox(padding: .5),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Row(
@@ -81,7 +81,7 @@ class InboxView extends StatelessWidget {
                         ),
                       ),
                       CustomVerticalSizeBox(
-                        padding: .8,
+                        padding: .6,
                       ),
                       TextFormField(
                         cursorColor: Colors.white,

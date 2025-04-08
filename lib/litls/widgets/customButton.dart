@@ -13,10 +13,10 @@ class CustomButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: SizeConfig.screenWidth!*.22),
-        padding: EdgeInsets.symmetric(vertical: 10),
+        margin: EdgeInsets.symmetric(horizontal: SizeConfig.screenWidth!*.2),
+        padding: EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-            color: Color(0xff18B4B6), borderRadius: BorderRadius.circular(10)),
+            color: Color(0xff4C4C4C), borderRadius: BorderRadius.circular(10)),
         child: Center(
           child: CustomText(
             text: text,

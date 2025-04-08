@@ -36,7 +36,10 @@ class CustomInboxItem extends StatelessWidget {
           CircleAvatar(
             radius: 24,
             backgroundColor: Colors.grey.shade200,
-            child: Image.asset('assets/images/user.png'),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Image.asset('assets/images/user.png'),
+            ),
           ),
       SizedBox(width: 16,),
           CustomText(
