@@ -13,7 +13,7 @@ class LoginService {
 
   static int? statisCode ;
 
-  Future<Either<Failure,String>> login({required String username , required String password}) async {
+  Future<Either<List<dynamic>,String>> login({required String username , required String password}) async {
 
     final String url  = "${baseUrl}auth/login?email=$username&password=$password";
     try {
@@ -34,15 +34,15 @@ class LoginService {
 
           return Right(token);
       } else {
-        return Left(ServerFailure('Something went wrong, try again'));
+        return Left([ServerFailure('Something went wrong, try again') , response.statusCode]);
       }
     } catch (e) {
 
       if (e is DioException) {
 
-        return Left(ServerFailure.fromDioError(e));
+        return Left([ServerFailure.fromDioError(e),e.response?.statusCode ??0]);
       } else {
-        return Left(ServerFailure("Something went wrong, try again"));
+        return Left([ServerFailure("Something went wrong, try again"),0]);
       }
     }
   }
@@ -59,7 +59,7 @@ class LoginCubit extends Cubit<LoginStates> {
     result.fold(
           (failure) {
 
-        emit(FailureLoginState(message: failure.errorMessage , statusCode:LoginService.statisCode ));
+        emit(FailureLoginState(message: failure[0].errorMessage , statusCode:failure[1] ));
       }, (token) {
         emit(SucessLoginState(token: token));
       },

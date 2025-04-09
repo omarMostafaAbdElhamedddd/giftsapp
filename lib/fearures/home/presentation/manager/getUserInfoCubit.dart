@@ -23,7 +23,7 @@ class GetUserInfoService {
  }
   Future<Either<List<dynamic>,UserDataModel>> getUserData() async {
     String id = await getUserId();
-    final String url = 'https://api.airogift.com/public/api/users/$id';
+    final String url = 'https://api.airogift.com/public/api/users/profile/$id';
 
     print(url);
     String token = await getToken();

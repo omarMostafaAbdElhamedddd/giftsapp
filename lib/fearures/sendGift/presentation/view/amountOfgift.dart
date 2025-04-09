@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gifts/fearures/sendGift/data/giftModel.dart';
+import 'package:gifts/fearures/sendGift/data/userModel.dart';
 import 'package:gifts/fearures/sendGift/presentation/manager/getGiftsCubit.dart';
 import 'package:gifts/fearures/sendGift/presentation/manager/states.dart';
 import 'package:gifts/fearures/sendGift/presentation/view/giftDeliveredSuccess.dart';
@@ -12,21 +13,18 @@ import 'package:gifts/litls/widgets/customText.dart';
 import 'package:gifts/litls/widgets/inputDecortion.dart';
 import 'package:iconly/iconly.dart';
 
+import '../../../auth/login/presentation/view/loginView.dart';
 import 'custombuttonSendGift.dart';
 
 class AmountOfgiftView extends StatefulWidget {
   const AmountOfgiftView({
     super.key,
-    required this.name,
-    required this.phoneNumber,
-    this.photoOrThumbnail, required this.id, required this.email,
+  required this.userModel, required this.balance
   });
 
-  final String id;
-  final String name;
-  final String phoneNumber;
-  final photoOrThumbnail;
-  final String email;
+final UserModel userModel;
+final double balance;
+
 
   @override
   State<AmountOfgiftView> createState() => _AmountOfgiftViewState();
@@ -40,7 +38,7 @@ class _AmountOfgiftViewState extends State<AmountOfgiftView> {
   }
   @override
   Widget build(BuildContext context) {
-    print('name is ${widget.name}');
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -104,15 +102,15 @@ class _AmountOfgiftViewState extends State<AmountOfgiftView> {
                           color: Color(0xff242424)),
                       child: Row(
                         children: [
-                          widget.photoOrThumbnail != null
+                          widget.userModel.image !=''
                               ? CircleAvatar(
-                                  backgroundImage:
-                                      MemoryImage(widget.photoOrThumbnail!),
+                                  backgroundImage:  NetworkImage( 'https://api.airogift.com/public/images/users/${widget.userModel.image}'),
+                                
                                 )
                               : CircleAvatar(
                                   backgroundColor: Colors.white,
                                   child: CustomText(
-                                    text: widget.name[0],
+                                    text: widget.userModel.name[0].toUpperCase(),
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -123,11 +121,11 @@ class _AmountOfgiftViewState extends State<AmountOfgiftView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               CustomText(
-                                text: widget.name,
+                                text: widget.userModel.name,
                                 color: Colors.white,
                               ),
                               CustomText(
-                                text: widget.phoneNumber,
+                                text: widget.userModel.phone,
                                 color: Colors.grey,
                                 fontSize: 12,
                               ),
@@ -259,12 +257,9 @@ class _AmountOfgiftViewState extends State<AmountOfgiftView> {
             // ),
             // SizedBox(height: 20,),
             Expanded(
-              child: ListOfGiftsWidget(
-                contactId: widget.id,
-                ContactName: widget.name,
-                photoOrThumbnail: widget.photoOrThumbnail,
-                phone: widget.phoneNumber,
-                email: widget.email,
+              child: ListOfGiftsWidget(userModel: widget.userModel,
+                totalBalance: widget.balance,
+             
               ),
             )
           ],
@@ -277,16 +272,20 @@ class _AmountOfgiftViewState extends State<AmountOfgiftView> {
 class ListOfGiftsWidget extends StatefulWidget {
   const ListOfGiftsWidget(
       {super.key,
-      required this.ContactName,
-      required this.phone,
-      this.photoOrThumbnail, required this.contactId, required this.email});
+        required this.userModel, required this.totalBalance
+      // required this.ContactName,
+      // required this.phone,
+      // this.photoOrThumbnail, required this.contactId, required this.email
+      
+      });
 
-  final String ContactName;
-  final String contactId;
-  final String phone;
-  final photoOrThumbnail;
-  final String email;
-
+  // final String ContactName;
+  // final String contactId;
+  // final String phone;
+  // final photoOrThumbnail;
+  // final String email;
+ final UserModel userModel;
+ final double totalBalance;
   @override
   State<ListOfGiftsWidget> createState() => _ListOfGiftsWidgetState();
 }
@@ -351,7 +350,8 @@ class _ListOfGiftsWidgetState extends State<ListOfGiftsWidget> {
       BlocConsumer<GetGiftsCubit , GetGiftsStates>(builder:(context,state){
       if(state is LoadingStateGetGifts){
         return SpinKitThreeBounce(color: Colors.black,size: 30,);
-      }else if(state is SuccessStateGetGifts){
+      }
+      else if(state is SuccessStateGetGifts){
         return Padding(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
           child: DynamicHeightGridView(
@@ -363,14 +363,15 @@ class _ListOfGiftsWidgetState extends State<ListOfGiftsWidget> {
               return SizedBox(
                 height: SizeConfig.screenHeight!*.25,
                 child: CustomGiftItem(
-                  contactId: widget.contactId,
+                  totalBalance: widget.totalBalance,
+                  contactId: widget.userModel.id.toString(),
                   giftModel: state.gift[index],
                   // image: 'assets/images/${imagesBestSellers[index]}',
                   // name: namesBestSellers[index],
-                  ContactName: widget.ContactName,
-                  photoOrThumbnail: widget.photoOrThumbnail,
-                  phone: widget.phone,
-                  email: widget.email ,
+                  ContactName: widget.userModel.name,
+                  photoOrThumbnail: widget.userModel.image,
+                  phone: widget.userModel.phone,
+                  email: widget.userModel.email ,
                 ),
               );
             },
@@ -379,8 +380,31 @@ class _ListOfGiftsWidgetState extends State<ListOfGiftsWidget> {
           ),
         );
       }else if (state is FailureStateGetGifts){
-        return Center(child: CustomText(text: state.message,fontWeight: FontWeight.bold, fontSize: 14,),);
-      }else{
+        if(state.message=='Request denied or unauthorized.'){
+          return AlertDialog(
+            title: CustomText(text: "Session Expired",color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18,),
+            content: CustomText(
+              maxLines: 4,
+              text: "Your session has expired. Please log in again.",fontSize: 13,fontWeight: FontWeight.w500,),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    // Navigate to login screen or perform logout
+                    Navigator.pushReplacement(context,PageRouteBuilder(pageBuilder:(context,an,sc){
+                      return LoginView();
+                    }));
+                  },
+                  child: CustomText(text: 'Login',fontWeight: FontWeight.bold,color: Colors.black,)
+              ),
+            ],
+          );
+        }else{
+          return Center(child: CustomText(text: state.message,fontWeight: FontWeight.bold, fontSize: 14,),);
+        }
+
+      }
+      else{
         return SizedBox();
       }
     },
@@ -521,7 +545,7 @@ class CustomGiftItem extends StatelessWidget {
       // required this.name,
       required this.ContactName,
       required this.phone,
-      this.photoOrThumbnail, required this.giftModel, required this.contactId, required this.email});
+      this.photoOrThumbnail, required this.giftModel, required this.contactId, required this.email, required this.totalBalance});
 
   final GiftModel giftModel;
   // final String image;
@@ -531,6 +555,7 @@ class CustomGiftItem extends StatelessWidget {
   final String phone;
   final photoOrThumbnail;
   final String contactId ;
+  final double totalBalance;
 
   @override
   Widget build(BuildContext context) {
@@ -539,6 +564,7 @@ class CustomGiftItem extends StatelessWidget {
         Navigator.push(context,
             PageRouteBuilder(pageBuilder: (context, an, sc) {
           return GiftDetilsView(
+            totalBalance: totalBalance,
 
             gift_id: giftModel.id,
 

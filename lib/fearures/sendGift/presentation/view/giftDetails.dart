@@ -5,6 +5,7 @@ import 'package:gifts/fearures/sendGift/presentation/manager/sendGiftCubit.dart'
 import 'package:gifts/fearures/sendGift/presentation/manager/sendGiftStates.dart';
 import 'package:gifts/fearures/sendGift/presentation/view/giftDeliveredSuccess.dart';
 import 'package:gifts/litls/widgets/customButton.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../litls/responsiveSize.dart';
 import '../../../../litls/widgets/customText.dart';
 import 'giftSendSuccessAndShare.dart';
@@ -21,7 +22,8 @@ class GiftDetilsView extends StatelessWidget {
       required this.content,
       required this.contactId,
       required this.email,
-      required this.gift_id});
+      required this.gift_id,
+        required this.totalBalance});
 
   final String name;
   final String image;
@@ -33,7 +35,7 @@ class GiftDetilsView extends StatelessWidget {
   final String contactId;
   final String email;
   final int gift_id;
-
+  final double totalBalance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,8 +102,8 @@ class GiftDetilsView extends StatelessWidget {
                           children: [
                             photoOrThumbnail != null
                                 ? CircleAvatar(
-                                    backgroundImage:
-                                        MemoryImage(photoOrThumbnail!),
+                              radius: 22,
+                                    backgroundImage:  NetworkImage( 'https://api.airogift.com/public/images/users/${photoOrThumbnail}'),
                                   )
                                 : CircleAvatar(
                                     backgroundColor: Colors.white,
@@ -201,9 +203,14 @@ class GiftDetilsView extends StatelessWidget {
                         if (loadingProgress == null) {
                           return child;
                         } else {
-                          return SpinKitThreeBounce(
-                            color: Colors.black,
-                            size: 30,
+                          return SizedBox(
+                            height: SizeConfig.screenHeight! * .17,
+                            child: Center(
+                              child: SpinKitThreeBounce(
+                                color: Colors.black,
+                                size: 30,
+                              ),
+                            ),
                           );
                         }
                       },
@@ -250,19 +257,34 @@ class GiftDetilsView extends StatelessWidget {
                           state is FailureStateSendGift ||
                           state is SuccessStateSendGift) {
                         return GestureDetector(
-                          onTap: () {
-                            context
-                                .read<SendGiftCubit>()
-                                .createOrder(orderData: {
-                              "name": ContactName,
-                              "email": email,
-                              "phone": phone,
-                              "amount": price.toString(),
-                              "bank": 'CIB',
-                              "sender_id": '2',
-                              "receiver_id": contactId,
-                              "gift_id": gift_id.toString(),
-                            });
+                          onTap: () async {
+                            if (price<=totalBalance) {
+                              final prefs = await SharedPreferences.getInstance();
+                              final id = await prefs.getString('id')!;
+                              context
+                                  .read<SendGiftCubit>()
+                                  .createOrder(orderData: {
+                                "name": ContactName,
+                                "email": email,
+                                "phone": phone,
+                                "amount": price.toString(),
+                                "bank": 'CIB',
+                                "sender_id": id,
+                                "receiver_id": contactId,
+                                "gift_id": gift_id.toString(),
+                              });
+                            }else{
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  showCloseIcon: true,
+                                  closeIconColor: Colors.white,
+                                  behavior: SnackBarBehavior.floating,
+                                  content: CustomText(
+                                    text: 'Your current balance is insufficient',
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  )));
+                            }
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 10),
@@ -292,8 +314,21 @@ class GiftDetilsView extends StatelessWidget {
                       if (state is SuccessStateSendGift) {
                         Navigator.push(context,
                             PageRouteBuilder(pageBuilder: (context, an, sc) {
-                          return GiftDelivedSuccess(
-                            text: 'GIFT\n DELIVERED',
+                          return SuccessSendGiftView(
+
+                              name: name,
+                              email: email,
+                              phone: phone,
+                              price: price,
+                            image: image,
+                            ContactName:ContactName ,
+                            content: content,
+                            contactId: contactId,
+                            gift_id: gift_id,
+                            photoOrThumbnail: photoOrThumbnail,
+
+
+
                           );
                         }));
                       } else if (state is FailureStateSendGift) {

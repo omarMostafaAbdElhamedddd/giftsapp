@@ -54,7 +54,7 @@ class _SuccessSendGiftViewState extends State<SuccessSendGiftView> {
           await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List pngBytes = byteData!.buffer.asUint8List();
 
-      // حفظ الصورة في ملف مؤقت
+
       final directory = await getTemporaryDirectory();
       final file = File('${directory.path}/screenshot.png');
       await file.writeAsBytes(pngBytes);
@@ -70,7 +70,7 @@ class _SuccessSendGiftViewState extends State<SuccessSendGiftView> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.image);
+    print(widget.photoOrThumbnail);
     SizeConfig().init(context);
     return Material(
       child: Column(
@@ -130,15 +130,16 @@ class _SuccessSendGiftViewState extends State<SuccessSendGiftView> {
                                             color: Colors.white),
                                         child: Row(
                                           children: [
-                                            widget.photoOrThumbnail != null
+                                            widget.photoOrThumbnail != ''
                                                 ? CircleAvatar(
-                                                    backgroundImage: MemoryImage(
-                                                        widget.photoOrThumbnail!),
+                                              radius: 22,
+                                              backgroundColor: Colors.grey.shade200,
+                                                    backgroundImage:  NetworkImage( 'https://api.airogift.com/public/images/users/${widget.photoOrThumbnail}'),
                                                   )
                                                 : CircleAvatar(
                                                     backgroundColor: Colors.grey.shade200,
                                                     child: CustomText(
-                                                      text: widget.ContactName[0],
+                                                      text: widget.ContactName[0].toUpperCase(),
                                                       fontWeight: FontWeight.w500,
                                                     ),
                                                   ),
@@ -152,6 +153,8 @@ class _SuccessSendGiftViewState extends State<SuccessSendGiftView> {
                                                 CustomText(
 
                                                   text: widget.ContactName,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14,
                                                   color: Colors.black,
                                                 ),
                                                 SizedBox(
@@ -160,6 +163,7 @@ class _SuccessSendGiftViewState extends State<SuccessSendGiftView> {
                                                 CustomText(
                                                   text: widget.phone,
                                                   color: Colors.grey,
+                                                  fontWeight: FontWeight.w600,
                                                   fontSize: 12,
                                                 ),
                                               ],

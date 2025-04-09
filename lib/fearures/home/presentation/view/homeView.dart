@@ -16,6 +16,7 @@ import 'package:gifts/fearures/giftRequest/presentation/giftRequestView.dart';
 import 'package:gifts/fearures/home/presentation/manager/getUserInfoCubit.dart';
 import 'package:gifts/fearures/home/presentation/manager/getUserInfoStates.dart';
 import 'package:gifts/fearures/merchants/view/merchantView.dart';
+import 'package:gifts/fearures/sendGift/presentation/manager/getAppUsers/getAppUserscubit.dart';
 import 'package:gifts/fearures/sendGift/presentation/view/sendGiftView.dart';
 import 'package:gifts/litls/responsiveSize.dart';
 import 'package:gifts/litls/widgets/customText.dart';
@@ -44,7 +45,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    final connectivityProvider = Provider.of<ConnectivityProvider>(context);
+    // final connectivityProvider = Provider.of<ConnectivityProvider>(context);
     return
         // connectivityProvider.isConnected ? connectivityProvider.hasInternetAccess ?
 
@@ -315,11 +316,15 @@ class _HomeViewState extends State<HomeView> {
                                     Row(
                                       children: [
                                         CustomItem(
-                                          onTap: () {
-                                            Navigator.push(context, PageRouteBuilder(
+                                          onTap: () async{
+                                         final result = await   Navigator.push(context, PageRouteBuilder(
                                                 pageBuilder: (context, an, sc) {
-                                              return ChargeAccountView();
+                                              return ChargeAccountView(balance: double.parse(state.userDataModel.balance),);
                                             }));
+
+                                         if (result == 'refresh') {
+                                           context.read<GetUseriInfoCbit>().getUserInfo();
+                                         }
                                           },
                                           text: 'Charge account',
                                           widget: Icon(
@@ -368,13 +373,22 @@ class _HomeViewState extends State<HomeView> {
                                     Row(
                                       children: [
                                         CustomItem(
-                                          onTap: () {
-                                            Navigator.push(context, PageRouteBuilder(
+                                          onTap: ()  async{
+                                         final result = await   Navigator.push(context, PageRouteBuilder(
                                                 pageBuilder: (context, an, sc) {
-                                              return SendGiftView(
-                                                email: state.userDataModel.email,
+                                              return BlocProvider<GetAppUsersCubit>(
+                                                create: (context)=>GetAppUsersCubit(GetAppUsersService()),
+                                                child: SendGiftView(
+                                                  id: state.userDataModel.id,
+                                                  balance: double.parse(state.userDataModel.balance),
+                                                  email: state.userDataModel.email,
+                                                ),
                                               );
                                             }));
+
+                                         if(result=='refresh'){
+                                           context.read<GetUseriInfoCbit>().getUserInfo();
+                                         }
                                           },
                                           text: 'Send Gift ',
                                           widget: ImageIcon(

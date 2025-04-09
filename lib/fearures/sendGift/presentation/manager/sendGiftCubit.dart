@@ -22,7 +22,7 @@ class SendGiftService {
 
   Future<Either<Failure,List<String>>> sendGift({required Map<String,dynamic> orderData}) async {
 
-    final String url  = "https://api.airogift.com/public/api/transactions";
+    final String url  = "https://api.airogift.com/public/api/users/gift";
     final token  = await getToken();
     print(orderData);
 

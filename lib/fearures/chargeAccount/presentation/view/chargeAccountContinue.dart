@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gifts/fearures/chargeAccount/presentation/manager/cubit.dart';
+import 'package:gifts/fearures/chargeAccount/presentation/manager/states.dart';
 import 'package:gifts/litls/consts.dart';
 import 'package:gifts/litls/responsiveSize.dart';
 
+import '../../../../litls/widgets/customButton.dart';
 import '../../../../litls/widgets/customText.dart';
 import '../../../sendGift/presentation/view/giftDeliveredSuccess.dart';
 
-class ChargeAccountContinue extends StatelessWidget {
-  const ChargeAccountContinue({super.key});
+class ChargeAccountContinue extends StatefulWidget {
+  const ChargeAccountContinue({super.key, required this.balance});
+  final double balance;
 
+  @override
+  State<ChargeAccountContinue> createState() => _ChargeAccountContinueState();
+}
+
+class _ChargeAccountContinueState extends State<ChargeAccountContinue> {
+
+  final TextEditingController balanceController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,9 +130,9 @@ class ChargeAccountContinue extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               CustomVerticalSizeBox(),
-              
+
               Container(
                 padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                 margin: EdgeInsets.symmetric(horizontal: 40),
@@ -132,7 +145,7 @@ class ChargeAccountContinue extends StatelessWidget {
                   children: [
                     CustomText(text: 'Account  balance',color: Colors.white,),
                     Spacer(),
-                    CustomText(text: '314\$' ,color:Colors.white,fontWeight: FontWeight.w600,),
+                    CustomText(text: '${widget.balance}\$' ,color:Colors.white,fontWeight: FontWeight.w600,),
                   ],
                 ),
               ),
@@ -152,6 +165,7 @@ class ChargeAccountContinue extends StatelessWidget {
                     Spacer(),
                     Expanded(
                       child: TextFormField(
+                        controller: balanceController,
                         style: TextStyle(
                           fontFamily: mainFont,
                           fontSize: 14,
@@ -177,30 +191,61 @@ class ChargeAccountContinue extends StatelessWidget {
               ),
             CustomVerticalSizeBox(padding: 1.2,),
 
-              GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).unfocus(); // إغلاق الكيبورد
-                  Future.delayed(Duration(milliseconds: 100), () { // تأخير بسيط لضمان إغلاق الكيبورد قبل التنقل
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, an, sc) {
-                          return GiftDelivedSuccess(text: 'ACCOUNT \n CHARGED',);
-                        },
-                      ),
-                    );
-                  });
-                },
 
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 40 , vertical: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7),
-                      color: Color(0xff434343)
-                  ),
-                  child: CustomText(text: 'CHARGE',color: Colors.white,),
-                ),
-              ),
+              BlocProvider(
+                  create: (context) => ChargeAccountCubit(
+                      CharageAccountService()),
+                  child: BlocConsumer<
+                      ChargeAccountCubit,
+                      ChargeAccountStates>(
+                    builder: (context, state) {
+                      if (state is InitStateChargeAccount ||
+                          state is FailureStateChargeAccount ||
+                          state is SuccessStateChargeAccount) {
+                        return    CustomButton(text: 'CHARGE', onTap: (){
+
+                          context.read<ChargeAccountCubit>().charageAccount(balance: balanceController.text);
+
+                        },);
+
+
+                      } else
+                      if (state is LoadingStateChargeAccount) {
+                        return SpinKitThreeBounce(
+                          size: 30,
+                          color: Colors.white,
+                        );
+                      } else {
+                        return SizedBox();
+                      }
+                    },
+                    listener: (context, state) {
+                      if (state is SuccessStateChargeAccount) {
+                        Navigator.push(context,
+                            PageRouteBuilder(
+                                pageBuilder: (context, an,
+                                    sc) {
+                                  return GiftDelivedSuccess(text: 'ACCOUNT \n CHARGED',);
+                                }));
+                      } else
+                      if (state is FailureStateChargeAccount) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(
+                            showCloseIcon: true,
+                            closeIconColor: Colors.white,
+                            behavior: SnackBarBehavior
+                                .floating,
+                            content: CustomText(
+                              text: state.errorMessage,
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                            )));
+                      }
+                    },
+                  )),
+
+
             ],
           ),
         ),

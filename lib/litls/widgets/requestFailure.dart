@@ -33,7 +33,7 @@ class ServerFailure extends Failure {
   }
 
   factory ServerFailure.fromResponse(int statusCode, dynamic response) {
-    if (statusCode == 400 || statusCode == 401 || statusCode == 403) {
+    if (statusCode == 400 || statusCode == 403) {
       return ServerFailure('Request denied or unauthorized.');
     } else if (statusCode == 404) {
       return ServerFailure('Requested resource not found.');

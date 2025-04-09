@@ -1,4 +1,5 @@
 class UserDataModel {
+  final int id ;
   final String name;
   final String email;
   final int friends;
@@ -7,6 +8,7 @@ class UserDataModel {
   final String image;
 
   UserDataModel({
+    required this.id,
     required this.name,
     required this.email,
     required this.balance,
@@ -17,9 +19,10 @@ class UserDataModel {
 
   factory UserDataModel.fromJson(data) {
     return UserDataModel(
+      id: data['id'],
         name: data['name'],
         email: data['email'],
-        balance: data['balance'] ?? 2700.000,
+        balance: data['balance'] ?? 0.0,
         friends: data['friends'] ?? 30,
         image: data['image']??'',
         requests: data['requests'] ?? 40);
@@ -28,6 +31,6 @@ class UserDataModel {
 
   @override
   String toString() {
-    return 'UserDataModel(name:$name,email:$email,balance:$balance,friends : $friends,requests:$requests ,image:$image )';
+    return 'UserDataModel(id: $id, name:$name,email:$email,balance:$balance,friends : $friends,requests:$requests ,image:$image )';
   }
 }

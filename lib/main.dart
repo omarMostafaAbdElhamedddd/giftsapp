@@ -34,12 +34,14 @@ final String token;
   @override
   Widget build(BuildContext context) {
     print(token);
-    return ChangeNotifierProvider(
-      create: (context)=>ConnectivityProvider(),
-      child: MaterialApp(
+    return
+      // ChangeNotifierProvider(
+      // create: (context)=>ConnectivityProvider(),
+      // child:
+      MaterialApp(
         debugShowCheckedModeBanner: false,
         home: token ==null || token == '' ?  LoginView() : RootView(),
-      ),
+      // ),
     );
   }
 }

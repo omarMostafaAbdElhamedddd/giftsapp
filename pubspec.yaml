@@ -53,7 +53,7 @@ dependencies:
   share_plus: ^7.2.2
   path_provider: ^2.1.3
   provider: ^6.1.4
-  connectivity_plus: ^5.0.2
+#  connectivity_plus: ^5.0.2
   intl: ^0.19.0
 #
 flutter_launcher_icons:
@@ -62,11 +62,12 @@ flutter_launcher_icons:
   image_path: "assets/images/logo.png"
 
 flutter_native_splash:
-  background_image: "assets/images/spla.png"
-#  image: assets/images/Airogift.png
+  color: "#000000"
+  image: assets/images/Airogift.png
   android: true
   ios: true
   web: false
+
 
 dev_dependencies:
   flutter_test:
