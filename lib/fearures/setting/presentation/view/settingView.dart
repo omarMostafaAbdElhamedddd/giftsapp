@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gifts/fearures/root/presentation/rootView.dart';
 import 'package:gifts/fearures/setting/presentation/view/widgets/addNewCreditCart.dart';
 import 'package:gifts/fearures/setting/presentation/view/widgets/customerCare.dart';
 import 'package:gifts/fearures/setting/presentation/view/widgets/editProfileImage.dart';
@@ -26,10 +27,7 @@ class SettingView extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Icon(
-                  //   Icons.arrow_back_ios,
-                  //   color: Colors.white,
-                  // ),
+
 
                   Padding(
                     padding: const EdgeInsets.only(top: 0, left: 12),
@@ -131,15 +129,22 @@ class SettingView extends StatelessWidget {
                           ),
                           text: 'Customer care'),
                     CustomVerticalSizeBox(),
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Color(0xff4C4C4C)),
-                        child: CustomText(
-                          text: 'Log out',
-                          color: Colors.white,
+                      InkWell(
+                        onTap: (){
+                          Navigator.pushReplacement(context,PageRouteBuilder(pageBuilder:(context,an,sc){
+                            return RootView();
+                          }));
+                        },
+                        child: Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Color(0xff4C4C4C)),
+                          child: CustomText(
+                            text: 'Log out',
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],

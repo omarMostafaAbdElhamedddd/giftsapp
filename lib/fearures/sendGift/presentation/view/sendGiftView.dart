@@ -15,10 +15,16 @@ import '../../../auth/login/presentation/view/loginView.dart';
 import '../manager/getGiftsCubit.dart';
 
 class SendGiftView extends StatefulWidget {
-  const SendGiftView({super.key, required this.email, required this.id, required this.balance});
- final String email;
- final int id;
- final double balance;
+  const SendGiftView(
+      {super.key,
+      required this.email,
+      required this.id,
+      required this.balance});
+
+  final String email;
+  final int id;
+  final double balance;
+
   @override
   State<SendGiftView> createState() => _SendGiftViewState();
 }
@@ -42,7 +48,7 @@ class _SendGiftViewState extends State<SendGiftView> {
         } else {
           filteredUsers = cubitState.users
               .where((user) =>
-              user.name.toLowerCase().contains(query.toLowerCase()))
+                  user.name.toLowerCase().contains(query.toLowerCase()))
               .toList();
         }
       });
@@ -52,8 +58,8 @@ class _SendGiftViewState extends State<SendGiftView> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async{
-        Navigator.pop(context,'refresh');
+      onWillPop: () async {
+        Navigator.pop(context, 'refresh');
         return false;
       },
       child: Scaffold(
@@ -127,23 +133,23 @@ class _SendGiftViewState extends State<SendGiftView> {
                           suffixIcon: searchController.text.isEmpty
                               ? SizedBox()
                               : InkWell(
-                            onTap: () {
-                              searchController.clear();
-                              filterUsers('');
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                              ),
-                              margin: EdgeInsets.all(10),
-                              child: Icon(
-                                Icons.clear,
-                                color: Colors.red,
-                                size: 18,
-                              ),
-                            ),
-                          ),
+                                  onTap: () {
+                                    searchController.clear();
+                                    filterUsers('');
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    margin: EdgeInsets.all(10),
+                                    child: Icon(
+                                      Icons.clear,
+                                      color: Colors.red,
+                                      size: 18,
+                                    ),
+                                  ),
+                                ),
                           prefixIcon: Icon(
                             Icons.search,
                             color: Colors.white,
@@ -187,32 +193,29 @@ class _SendGiftViewState extends State<SendGiftView> {
                         }
 
                         return Padding(
-                          padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 16),
                           child: ListView.builder(
                             itemCount: filteredUsers.length,
                             itemBuilder: (context, index) {
                               return widget.id != filteredUsers[index].id
                                   ? CustomSearchItem(
-                                userModel: filteredUsers[index],
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      PageRouteBuilder(
-                                          pageBuilder: (context, an, sc) {
-                                            return BlocProvider<GetGiftsCubit>(
-                                              create: (context) =>
-                                                  GetGiftsCubit(
-                                                      GetGiftsService()),
-                                              child: AmountOfgiftView(
-                                                balance: widget.balance,
-                                                userModel:
-                                                filteredUsers[index],
-                                              ),
-                                            );
-                                          }));
-                                },
-                              )
+                                      userModel: filteredUsers[index],
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            PageRouteBuilder(
+                                                pageBuilder: (context, an, sc) {
+                                          return BlocProvider<GetGiftsCubit>(
+                                            create: (context) => GetGiftsCubit(
+                                                GetGiftsService()),
+                                            child: AmountOfgiftView(
+                                              balance: widget.balance,
+                                              userModel: filteredUsers[index],
+                                            ),
+                                          );
+                                        }));
+                                      },
+                                    )
                                   : SizedBox();
                             },
                           ),
@@ -230,7 +233,7 @@ class _SendGiftViewState extends State<SendGiftView> {
                             content: CustomText(
                               maxLines: 4,
                               text:
-                              "Your session has expired. Please log in again.",
+                                  "Your session has expired. Please log in again.",
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                             ),
@@ -240,7 +243,8 @@ class _SendGiftViewState extends State<SendGiftView> {
                                   Navigator.of(context).pop();
                                   Navigator.pushReplacement(
                                     context,
-                                    PageRouteBuilder(pageBuilder: (context, an, sc) {
+                                    PageRouteBuilder(
+                                        pageBuilder: (context, an, sc) {
                                       return LoginView();
                                     }),
                                   );
@@ -278,12 +282,12 @@ class _SendGiftViewState extends State<SendGiftView> {
   }
 }
 
-
 class CustomSearchItem extends StatelessWidget {
   const CustomSearchItem({super.key, required this.userModel, this.onTap});
 
- final UserModel userModel;
- final Function()? onTap;
+  final UserModel userModel;
+  final Function()? onTap;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -298,15 +302,31 @@ class CustomSearchItem extends StatelessWidget {
         child: Row(
           children: [
             userModel.image != ''
-                ? CircleAvatar(
-              radius: 22,
-              backgroundColor: Colors.grey.shade100,
-              backgroundImage: NetworkImage( 'https://api.airogift.com/public/images/users/${userModel.image}'),
-            )
-                : CircleAvatar(
-              backgroundColor: Colors.white,
-              child: CustomText(text: userModel.name[0].toUpperCase(),fontWeight: FontWeight.w600,),
-            ),
+                ? Container(
+                    padding: EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white),
+                        shape: BoxShape.circle),
+                    child: CircleAvatar(
+                      radius: 22,
+                      backgroundColor: Colors.grey.shade100,
+                      backgroundImage: NetworkImage(
+                          'https://api.airogift.com/public/images/users/${userModel.image}'),
+                    ),
+                  )
+                : Container(
+                    padding: EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white),
+                        shape: BoxShape.circle),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: CustomText(
+                        text: userModel.name[0].toUpperCase(),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
             // CircleAvatar(
             //   backgroundColor: Colors.black,
             //   backgroundImage: AssetImage('assets/images/user.png'),
@@ -318,14 +338,15 @@ class CustomSearchItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   CustomText(
                     text: userModel.name,
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                   ),
-                  SizedBox(height: 2,),
+                  SizedBox(
+                    height: 2,
+                  ),
                   CustomText(
                     text: userModel.phone,
                     color: Colors.grey,
@@ -335,9 +356,11 @@ class CustomSearchItem extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios_outlined , size: 17,color: Colors.grey),
-            SizedBox(width: 4,),
-
+            Icon(Icons.arrow_forward_ios_outlined,
+                size: 17, color: Colors.grey),
+            SizedBox(
+              width: 4,
+            ),
           ],
         ),
       ),

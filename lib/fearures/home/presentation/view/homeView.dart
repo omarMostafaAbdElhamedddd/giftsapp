@@ -227,11 +227,12 @@ class _HomeViewState extends State<HomeView> {
                                         ),
 
                                         Container(
-                                          padding: EdgeInsets.all(0),
+                                          padding: EdgeInsets.all(2),
                                           height: 90,
                                           width: 90,
+
                                           decoration: BoxDecoration(
-                                            border: Border.all(color: Colors.white),
+                                            border: Border.all(color: Colors.black,width: 2),
                                             shape: BoxShape.circle,
                                             color: Colors.transparent,
                                           ),
@@ -246,12 +247,12 @@ class _HomeViewState extends State<HomeView> {
                                               loadingBuilder: (context, child, loadingProgress) {
                                                 if (loadingProgress == null) return child;
                                                 return Container(
-                                                  color: Colors.grey.shade200,
+                                                  color: Colors.grey.shade100,
                                                 );
                                               },
                                               errorBuilder: (context, error, stackTrace) {
                                                 return Container(
-                                                  color: Colors.grey.shade200,
+                                                  color: Colors.grey.shade100,
                                                 );
                                               },
 
@@ -346,11 +347,15 @@ class _HomeViewState extends State<HomeView> {
                                           ),
                                         ),
                                         CustomItem(
-                                          onTap: () {
-                                            Navigator.push(context, PageRouteBuilder(
-                                                pageBuilder: (context, an, sc) {
-                                              return GiftRequestView();
-                                            }));
+                                          onTap: () async {
+                                         final result = await    Navigator.push(context, PageRouteBuilder(
+                                             pageBuilder: (context, an, sc) {
+                                               return GiftRequestView(gifts:state.pendingGifts,);
+                                             }));
+
+                                         if(result=='refresh') {
+                                         await  context.read<GetUseriInfoCbit>().getUserInfo();
+                                         }
                                           },
                                           text: 'Gift requests',
                                           widget: ImageIcon(
@@ -368,7 +373,7 @@ class _HomeViewState extends State<HomeView> {
                                       ],
                                     ),
                                     SizedBox(
-                                      height: 28,
+                                      height: 32,
                                     ),
                                     Row(
                                       children: [
@@ -400,7 +405,10 @@ class _HomeViewState extends State<HomeView> {
                                           onTap: () {
                                             Navigator.push(context, PageRouteBuilder(
                                                 pageBuilder: (context, an, sc) {
-                                              return BalanceHistoryView();
+                                              return BalanceHistoryView(
+                                                gifts: state.gifts,
+                                                balances: state.balances ,
+                                              );
                                             }));
                                           },
                                           text: 'Balance history',
@@ -555,7 +563,7 @@ class CustomItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GestureDetector(
+      child: InkWell(
         onTap: onTap,
         child: Column(
           children: [
@@ -565,7 +573,7 @@ class CustomItem extends StatelessWidget {
               child: FittedBox(child: widget),
             ),
             SizedBox(
-              height: 20,
+              height: 15,
             ),
             CustomText(
               textAlign: TextAlign.center,

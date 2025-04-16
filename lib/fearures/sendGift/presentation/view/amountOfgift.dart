@@ -103,10 +103,18 @@ class _AmountOfgiftViewState extends State<AmountOfgiftView> {
                       child: Row(
                         children: [
                           widget.userModel.image !=''
-                              ? CircleAvatar(
-                                  backgroundImage:  NetworkImage( 'https://api.airogift.com/public/images/users/${widget.userModel.image}'),
-                                
-                                )
+                              ? Container(
+                            padding: EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                shape: BoxShape.circle
+                            ),
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.grey.shade100,
+                                    backgroundImage:  NetworkImage( 'https://api.airogift.com/public/images/users/${widget.userModel.image}'),
+
+                                  ),
+                              )
                               : CircleAvatar(
                                   backgroundColor: Colors.white,
                                   child: CustomText(
@@ -353,7 +361,7 @@ class _ListOfGiftsWidgetState extends State<ListOfGiftsWidget> {
       }
       else if(state is SuccessStateGetGifts){
         return Padding(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           child: DynamicHeightGridView(
 
 
@@ -604,6 +612,9 @@ class CustomGiftItem extends StatelessWidget {
                         child: Image.network(
                           'https://api.airogift.com/public/images/projects/${giftModel.image}',
                           fit: BoxFit.fill,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Center(child: Icon(Icons.error_outline , color: Colors.redAccent,));
+                      },
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) {
                               return child;
@@ -614,6 +625,7 @@ class CustomGiftItem extends StatelessWidget {
                                 ),
                               );
                             }
+                            
                           },
                         ),
                       ),

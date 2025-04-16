@@ -58,7 +58,7 @@ final String text;
                 PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) => RootView(),
                 ),
-                    (route) => false, // يحذف كل الشاشات السابقة
+                    (route) => false,
               );
 
             },

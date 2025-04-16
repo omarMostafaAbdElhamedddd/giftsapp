@@ -1,20 +1,25 @@
 
 import 'package:flutter/material.dart';
+import 'package:gifts/fearures/balance%20history/data/balanceHistoryModel.dart';
+import 'package:gifts/fearures/balance%20history/data/giftModelHistory.dart';
 import 'package:gifts/litls/responsiveSize.dart';
 import 'package:gifts/litls/widgets/customText.dart';
 
 class BalanceHistoryView extends StatefulWidget {
-  const BalanceHistoryView({super.key});
+  const BalanceHistoryView({super.key, required this.gifts, required this.balances});
 
+  final List<GiftModelHistory> gifts;
+  final List<BalanceHistoryModel> balances;
   @override
   State<BalanceHistoryView> createState() => _BalanceHistoryViewState();
 }
 
 class _BalanceHistoryViewState extends State<BalanceHistoryView> {
-  bool dailyOrmonthly = true;
+  bool giftsOrBalnces = true;
 
   @override
   Widget build(BuildContext context) {
+ print(widget.gifts[0].type);
     SizeConfig().init(context);
     return Scaffold(
 
@@ -38,10 +43,10 @@ class _BalanceHistoryViewState extends State<BalanceHistoryView> {
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: CustomText(
-                  text: 'Balance history',
+                  text: 'History',
                   color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               Transform.rotate(
@@ -71,39 +76,44 @@ class _BalanceHistoryViewState extends State<BalanceHistoryView> {
                   SizedBox(height: 30,),
                   Row(
                     children: [
-                      GestureDetector(
-                        onTap: (){
-                          dailyOrmonthly = true;
-                          setState(() {
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: (){
+                            giftsOrBalnces = true;
+                            setState(() {
 
-                          });
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 24 , vertical: 10),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: dailyOrmonthly ?  Colors.white : Colors.transparent),
-                              color: Color(0xff242424),
-                              borderRadius: BorderRadius.circular(5)
+                            });
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 26 , vertical: 10),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: giftsOrBalnces ?  Colors.white : Colors.transparent),
+                                color: Color(0xff242424),
+                                borderRadius: BorderRadius.circular(5)
+                            ),
+                            child: Center(child: CustomText(text: 'Gifts history' ,color: Colors.white,)),
                           ),
-                          child: CustomText(text: 'Received Gifts' ,color: Colors.white,),
                         ),
                       ),
-                      Spacer(),
-                      GestureDetector(
-                        onTap: (){
-                          dailyOrmonthly = false;
-                          setState(() {
+                      SizedBox(width: 20,),
 
-                          });
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 30 , vertical: 10),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: !dailyOrmonthly ?  Colors.white : Colors.transparent),
-                              color: Color(0xff242424),
-                              borderRadius: BorderRadius.circular(5)
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: (){
+                            giftsOrBalnces = false;
+                            setState(() {
+
+                            });
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: !giftsOrBalnces ?  Colors.white : Colors.transparent),
+                                color: Color(0xff242424),
+                                borderRadius: BorderRadius.circular(5)
+                            ),
+                            child: Center(child: CustomText(text: 'Balance history' ,color: Colors.white,)),
                           ),
-                          child: CustomText(text: 'Sent Gifts' ,color: Colors.white,),
                         ),
                       ),
                     ],
@@ -124,7 +134,7 @@ class _BalanceHistoryViewState extends State<BalanceHistoryView> {
 
                     children: [
                       SizedBox(height: 30,),
-                      dailyOrmonthly ?  DailyComingEvents(index: 0 ,) : MonthlyComingEvents(),
+                      giftsOrBalnces ?  GiftsHistoryWidge(gifts: widget.gifts,) : BalanceHistoryWidget(balances: widget.balances,),
 
 
                     ],
@@ -143,49 +153,25 @@ class _BalanceHistoryViewState extends State<BalanceHistoryView> {
   }
 }
 
-class DailyComingEvents extends StatelessWidget {
-  const DailyComingEvents({super.key, required this.index});
- final int index;
+class GiftsHistoryWidge extends StatelessWidget {
+  const GiftsHistoryWidge({super.key, required this.gifts,});
+ final List<GiftModelHistory> gifts;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 10 ),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(13),
-              color: Color(0xff181818)
-          ),
 
-          child: Center(child: CustomText(text: 'Friday 13th june 2022',color: Colors.white,)),
-        ),
-        SizedBox(height: 20,),
         ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: 5,
+            itemCount: gifts.length,
             itemBuilder: (context,index){
-              return CustomEvent(index: index,);
+              return CustomEvent(giftModelHistory:gifts[index],);
             }),
         SizedBox(height: 20,),
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 10 ),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(13),
-              color: Color(0xff181818)
-          ),
 
-          child: Center(child: CustomText(text: 'Saturday 14th june 2022',color: Colors.white,)),
-        ),
-        SizedBox(height: 20,),
-        ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: 5,
-            itemBuilder: (context,index){
-              return CustomEvent(index:index,);
-            }),
-        SizedBox(height: 20,),
+
+
 
       ],
     );
@@ -193,10 +179,11 @@ class DailyComingEvents extends StatelessWidget {
 }
 
 class CustomEvent extends StatelessWidget {
-  const CustomEvent({super.key, required this.index});
- final int index;
+  const CustomEvent({super.key, required this.giftModelHistory,});
+ final GiftModelHistory giftModelHistory;
   @override
   Widget build(BuildContext context) {
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -218,16 +205,24 @@ class CustomEvent extends StatelessWidget {
             child: Image.asset('assets/images/user.png'),
           ),
           SizedBox(width: 16,),
-          CustomText(text: 'Mohamed charaf'),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomText(text:   giftModelHistory.type == 'in' ? 'From' : "To", fontSize: 8,fontWeight: FontWeight.w600,color: Colors.blueAccent,),
+              CustomText(text: giftModelHistory.name),
+              SizedBox(height: 2,),
+              CustomText(text: giftModelHistory.phone, fontSize: 12,color: Colors.grey,),
+            ],
+          ),
           Spacer(),
           Column(
             children: [
-              CustomText(text: 'Wedding' , fontWeight: FontWeight.w500,),
+              CustomText(text: giftModelHistory.date.split(' ')[0] , fontWeight: FontWeight.w500,fontSize: 10,),
               SizedBox(height: 5,),
-              index %2== 0 ? CustomText(
+             giftModelHistory.type == 'in' ? CustomText(
 
-                text: '+314\$', fontWeight: FontWeight.w600,fontSize: 14,color: Colors.green,)
-                  : CustomText(text: '-314\$', fontWeight: FontWeight.w600,fontSize: 14,color: Colors.red,)
+                text: '+${giftModelHistory.amount}\$', fontWeight: FontWeight.w600,fontSize: 14,color: Colors.green,)
+                  : CustomText(text: '-${giftModelHistory.amount}\$', fontWeight: FontWeight.w600,fontSize: 14,color: Colors.red,)
             ],
           ),
           SizedBox(width: 16,),
@@ -238,48 +233,22 @@ class CustomEvent extends StatelessWidget {
   }
 }
 
-class MonthlyComingEvents extends StatelessWidget {
-  const MonthlyComingEvents({super.key});
-
+class BalanceHistoryWidget extends StatelessWidget {
+  const BalanceHistoryWidget({super.key, required this.balances});
+ final List<BalanceHistoryModel> balances;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 10 ),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(13),
-              color: Color(0xff181818)
-          ),
 
-          child: Center(child: CustomText(text: ' June 2022',color: Colors.white,)),
-        ),
-        SizedBox(height: 20,),
         ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: 5,
+            itemCount: balances.length,
             itemBuilder: (context,index){
-              return CustomEvent(index: index,);
+              return CustomBalanceItem(balanceHistoryModel: balances[index],);
             }),
-        SizedBox(height: 20,),
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 10 ),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(13),
-              color: Color(0xff181818)
-          ),
 
-          child: Center(child: CustomText(text: ' june 2022',color: Colors.white,)),
-        ),
-        SizedBox(height: 20,),
-        ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: 5,
-            itemBuilder: (context,index){
-              return CustomEvent(index: index,);
-            }),
         SizedBox(height: 20,),
 
       ],
@@ -287,4 +256,46 @@ class MonthlyComingEvents extends StatelessWidget {
   }
 }
 
+
+class CustomBalanceItem extends StatelessWidget {
+  const CustomBalanceItem({super.key, required this.balanceHistoryModel});
+final BalanceHistoryModel balanceHistoryModel;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+      margin: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(7)
+      ),
+      child: Row(
+        children: [
+
+          Icon(Icons.monetization_on , size: 32,),
+          SizedBox(width: 16,),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                CustomText(text: "\$ ${balanceHistoryModel.amount} has been successfully added to your account.", maxLines: 3,fontSize: 14,),
+              ],
+            ),
+          ),
+
+          Column(
+            children: [
+              CustomText(text: balanceHistoryModel.date.split(' ')[0] , fontWeight: FontWeight.w500,fontSize: 10,),
+              SizedBox(height: 5,),
+
+            ],
+          ),
+          SizedBox(width: 16,),
+          Icon(Icons.arrow_forward_ios , size: 12,)
+        ],
+      ),
+    );
+  }
+}
 

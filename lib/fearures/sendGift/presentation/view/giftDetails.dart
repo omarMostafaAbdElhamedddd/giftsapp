@@ -100,11 +100,19 @@ class GiftDetilsView extends StatelessWidget {
                             color: Color(0xff242424)),
                         child: Row(
                           children: [
-                            photoOrThumbnail != null
-                                ? CircleAvatar(
+                            photoOrThumbnail != ''
+                                ? Container(
+                              padding: EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                shape: BoxShape.circle
+                              ),
+                                  child: CircleAvatar(
+                              backgroundColor: Colors.grey.shade100,
                               radius: 22,
-                                    backgroundImage:  NetworkImage( 'https://api.airogift.com/public/images/users/${photoOrThumbnail}'),
-                                  )
+                                      backgroundImage:  NetworkImage( 'https://api.airogift.com/public/images/users/${photoOrThumbnail}'),
+                                    ),
+                                )
                                 : CircleAvatar(
                                     backgroundColor: Colors.white,
                                     child: CustomText(
